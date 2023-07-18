@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fateyev.ToDoList.models.Task;
 import ru.fateyev.ToDoList.repositories.TaskRepository;
-
+import ru.fateyev.ToDoList.util.NotFoundException;
 import java.util.List;
 
 @Service
@@ -29,7 +29,7 @@ public class TaskService {
     }
 
     public Task findOne(int id){
-        return taskRepository.findById(id).orElse(null);
+        return taskRepository.findById(id).orElseThrow(()-> new NotFoundException("Task with this id was not found"));
     }
 
     @Transactional
