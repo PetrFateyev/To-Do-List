@@ -1,24 +1,47 @@
 package ru.fateyev.ToDoList.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-
-import java.time.LocalDate;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Data
-@Table(name = "todolist")
+@NoArgsConstructor
+@Table(name = "to_do_lists")
 public class ToDoList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
 
-    private LocalDate createdDate;
+    @Column(name = "name", nullable = false)
+    @NotEmpty(message = "Name should not be empty")
+    @Size(min = 2, max = 50, message = "Name should be between 2 and 50 characters")
+    private String name;
 
-    private LocalDate modifiedDate;
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date")
+    private Date createdDate;
 
-    @OneToMany(mappedBy = "toDoList")
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "modified_date")
+    private Date modifiedDate;
+
+    @OneToMany(mappedBy = "toDoList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Task> taskList;
+
+    public ToDoList(String name) {
+        this.name = name;
+    }
 }
