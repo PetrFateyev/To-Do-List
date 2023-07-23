@@ -1,5 +1,7 @@
 package ru.fateyev.ToDoList.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.fateyev.ToDoList.models.ToDoList;
 import ru.fateyev.ToDoList.services.ToDoListService;
 
+@Tag(name="To Do List", description="To Do List API")
 @RestController
 @RequestMapping("/api")
 public class ToDoListController {
@@ -21,7 +24,9 @@ public class ToDoListController {
         this.toDoListService = toDoListService;
     }
 
-    //Метод для получения всех списков
+    @Operation(
+            summary = "получение списков дел",
+            description = "позволяет получить все списки дел")
     @GetMapping("/lists")
     public Page<ToDoList> getLists(
             @RequestParam(value = "offset", defaultValue = "0", required = false)@Min(0) Integer offset,
@@ -31,35 +36,44 @@ public class ToDoListController {
         return toDoListService.findAll(offset, limit,sort);
     }
 
-    //Метод для получения списка по id
+    @Operation(
+            summary = "получение списка дел",
+            description = "позволяет получить список дел по id")
     @GetMapping("/lists/{id}")
     public ToDoList getList(@PathVariable("id") int id){
         return toDoListService.findOne(id);
     }
 
-
-    //Метод для добавления списка дел
+    @Operation(
+            summary = "добавление списка дел",
+            description = "позволяет создать валидный список дел")
     @PostMapping("/lists")
     public ResponseEntity<HttpStatus> createList(@RequestBody @Valid ToDoList toDoList){
         toDoListService.save(toDoList);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    //Метод для измениния списка
+    @Operation(
+            summary = "изменение списка дел",
+            description = "позволяет изменить список дел по id")
     @PutMapping("/lists/{id}")
     public ResponseEntity<HttpStatus> updateList(@PathVariable("id") int id, @RequestBody @Valid ToDoList toDoList) {
         toDoListService.update(id, toDoList);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    //Метод для удаления списка
+    @Operation(
+            summary = "удаление списка дел",
+            description = "позволяет удалить список дел по id")
     @DeleteMapping("/lists/{id}")
     public ResponseEntity<HttpStatus> deleteList(@PathVariable("id") int id) {
         toDoListService.delete(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    //Метод для удаления всех списков
+    @Operation(
+            summary = "удаление списков дел",
+            description = "позволяет удалить все списки дел")
     @DeleteMapping("/lists")
     public ResponseEntity<HttpStatus> deleteAllLists() {
         toDoListService.deleteAll();
