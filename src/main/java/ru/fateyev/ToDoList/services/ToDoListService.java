@@ -1,15 +1,14 @@
 package ru.fateyev.ToDoList.services;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.fateyev.ToDoList.models.Task;
+import ru.fateyev.ToDoList.controllers.ListSort;
 import ru.fateyev.ToDoList.models.ToDoList;
 import ru.fateyev.ToDoList.repositories.ToDoListRepository;
 import ru.fateyev.ToDoList.util.NotFoundException;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,8 +26,8 @@ public class ToDoListService {
         toDoListRepository.save(toDoList);
     }
 
-    public List<ToDoList> findAll(){
-        return toDoListRepository.findAll();
+    public Page<ToDoList> findAll(Integer offset, Integer limit, ListSort sort){
+        return toDoListRepository.findAll(PageRequest.of(offset,limit,sort.getSortValue()));
     }
 
     public ToDoList findOne(int id){
@@ -37,6 +36,9 @@ public class ToDoListService {
 
     @Transactional
     public void update(int id, ToDoList updatedToDoList){
+        if (!toDoListRepository.existsById(id)) {
+            throw new NotFoundException("List with this id was not found");
+        }
         updatedToDoList.setId(id);
         toDoListRepository.save(updatedToDoList);
     }
@@ -46,13 +48,9 @@ public class ToDoListService {
         toDoListRepository.deleteById(id);
     }
 
-    public List<Task> getTasksByListId(int id) {
-        Optional<ToDoList> list = toDoListRepository.findById(id);
-
-        if (!list.isPresent()) {
-            //throw new ResourceNotFoundException();
-        }
-        Hibernate.initialize(list.get().getTaskList());
-        return list.get().getTaskList();
+    @Transactional
+    public void deleteAll() {
+        toDoListRepository.deleteAll();
     }
+
 }
