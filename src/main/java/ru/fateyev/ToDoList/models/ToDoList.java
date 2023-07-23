@@ -4,15 +4,17 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Table(name = "to_do_lists")
 public class ToDoList {
@@ -29,7 +31,7 @@ public class ToDoList {
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_date")
+    @Column(name = "created_date", nullable = false, updatable = false)
     private Date createdDate;
 
     @UpdateTimestamp
@@ -37,7 +39,7 @@ public class ToDoList {
     @Column(name = "modified_date")
     private Date modifiedDate;
 
-    @OneToMany(mappedBy = "toDoList", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "toDoList", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Task> taskList;
 
