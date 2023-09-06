@@ -57,10 +57,4 @@ public class Task {
     @JoinColumn(name = "to_do_list_id", foreignKey = @ForeignKey(name = "FK_TASK_TO_DO_LIST_ID"))
     @JsonBackReference
     private ToDoList toDoList;
-
-    public Task(String name, String description, int priority) {
-        this.name = name;
-        this.description = description;
-        this.priority = priority;
-    }
 }
