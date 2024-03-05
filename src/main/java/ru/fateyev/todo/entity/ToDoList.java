@@ -1,4 +1,4 @@
-package ru.fateyev.ToDoList.models;
+package ru.fateyev.todo.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

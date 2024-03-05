@@ -1,28 +1,26 @@
-package ru.fateyev.ToDoList.controllers;
+package ru.fateyev.todo.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.fateyev.ToDoList.models.ToDoList;
-import ru.fateyev.ToDoList.services.ToDoListService;
+import ru.fateyev.todo.entity.ToDoList;
+import ru.fateyev.todo.service.ToDoListService;
 
 @Tag(name="To Do List", description="To Do List API")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class ToDoListController {
 
     private final ToDoListService toDoListService;
-    @Autowired
-    public ToDoListController(ToDoListService toDoListService) {
-        this.toDoListService = toDoListService;
-    }
+
 
     @Operation(
             summary = "получение списков дел",

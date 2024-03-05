@@ -1,33 +1,30 @@
-package ru.fateyev.ToDoList.controllers;
+package ru.fateyev.todo.web.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.fateyev.ToDoList.models.Task;
-import ru.fateyev.ToDoList.services.TaskService;
+import ru.fateyev.todo.service.TaskService;
+import ru.fateyev.todo.web.dto.TaskDTO;
+
 import java.util.List;
 
 @Tag(name="Task", description="The Task API")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api")
 public class TaskController {
 
     private final TaskService taskService;
 
-    @Autowired
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
-
     @Operation(
             summary = "получение всех дел",
             description = "позволяет получить все дела в списке по заданному id списка")
     @GetMapping("/lists/{listId}/tasks")
-    public ResponseEntity<List<Task>> getAllTaskByToDoListId(@PathVariable(value = "listId") int id) {
+    public ResponseEntity<List<TaskDTO>> getAllTaskByToDoListId(@PathVariable(value = "listId") int id) {
         return new ResponseEntity<>(taskService.findByToDoListId(id), HttpStatus.OK);
     }
 
@@ -35,7 +32,7 @@ public class TaskController {
             summary = "получение дела",
             description = "позволяет получить дело по заданному id")
     @GetMapping("/tasks/{id}")
-    public ResponseEntity<Task> getTask(@PathVariable("id") int id){
+    public ResponseEntity<TaskDTO> getTask(@PathVariable("id") int id){
         return new ResponseEntity<>(taskService.findOne(id), HttpStatus.OK);
     }
 
@@ -44,8 +41,8 @@ public class TaskController {
             summary = "создание дела",
             description = "позволяет добавить дело в список дел по id списка")
     @PostMapping("/lists/{listId}/tasks")
-    public ResponseEntity<HttpStatus> createTask(@PathVariable(value = "listId") int listId, @RequestBody @Valid Task task){
-        taskService.create(listId,task);
+    public ResponseEntity<HttpStatus> createTask(@PathVariable(value = "listId") int listId, @RequestBody @Valid TaskDTO taskDTO){
+        taskService.create(listId,taskDTO);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
@@ -53,8 +50,8 @@ public class TaskController {
             summary = "изменение дела",
             description = "позволяет изменить дело по id")
     @PutMapping(value = "/tasks/{id}")
-    public ResponseEntity<HttpStatus> updateTask(@PathVariable("id") int id, @RequestBody @Valid Task task) {
-        taskService.update(id, task);
+    public ResponseEntity<HttpStatus> updateTask(@PathVariable("id") int id, @RequestBody @Valid TaskDTO taskDTO) {
+        taskService.update(id, taskDTO);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
@@ -62,8 +59,8 @@ public class TaskController {
             summary = "пометить сделанным",
             description = "позволяет пометить дело, как сделанное")
     @PutMapping("/tasks/mark-done/{id}")
-    public ResponseEntity<HttpStatus> markDone(@PathVariable("id") int id, @RequestBody @Valid Task task) {
-        taskService.markDone(id, task);
+    public ResponseEntity<HttpStatus> markDone(@PathVariable("id") int id, @RequestBody @Valid TaskDTO taskDTO) {
+        taskService.markDone(id, taskDTO);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 

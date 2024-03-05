@@ -1,4 +1,4 @@
-package ru.fateyev.ToDoList.config;
+package ru.fateyev.todo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

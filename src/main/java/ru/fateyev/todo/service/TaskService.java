@@ -1,61 +1,68 @@
-package ru.fateyev.ToDoList.services;
+package ru.fateyev.todo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.fateyev.ToDoList.models.Task;
-import ru.fateyev.ToDoList.repositories.TaskRepository;
-import ru.fateyev.ToDoList.repositories.ToDoListRepository;
-import ru.fateyev.ToDoList.util.NotFoundException;
+import ru.fateyev.todo.entity.Task;
+import ru.fateyev.todo.repository.TaskRepository;
+import ru.fateyev.todo.repository.ToDoListRepository;
+import ru.fateyev.todo.exception.NotFoundException;
+import ru.fateyev.todo.util.mapper.TaskMapper;
+import ru.fateyev.todo.web.dto.TaskDTO;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepository;
     private final ToDoListRepository toDoListRepository;
+    private final TaskMapper taskMapper;
 
-    @Autowired
-    public TaskService(TaskRepository taskRepository, ToDoListRepository toDoListRepository) {
-        this.taskRepository = taskRepository;
-        this.toDoListRepository = toDoListRepository;
-    }
 
     @Transactional
-    public void create(int listId, Task task) {
+    public void create(int listId, TaskDTO taskDTO) {
         toDoListRepository.findById(listId).map(list -> {
+            Task task = taskMapper.toEntity(taskDTO);
             task.setToDoList(list);
             return taskRepository.save(task);
         }).orElseThrow(() -> new NotFoundException("List with this id was not found"));
     }
 
-    public List<Task> findByToDoListId(int listId) {
+    public List<TaskDTO> findByToDoListId(int listId) {
         if (!toDoListRepository.existsById(listId)) {
             throw new NotFoundException("List with this id was not found");
         }
-        return taskRepository.findByToDoListId(listId);
+        return taskRepository.findByToDoListId(listId)
+                                .stream()
+                                .map(taskMapper::toDto)
+                                .collect(Collectors.toList());
     }
 
-    public Task findOne(int id){
-        return taskRepository.findById(id)
+    public TaskDTO findOne(int id){
+        return taskRepository.findById(id).map(taskMapper::toDto)
                 .orElseThrow(()-> new NotFoundException("Task with this id was not found"));
     }
 
     @Transactional
-    public void update(int id, Task updatedTask){
+    public void update(int id, TaskDTO taskDTO){
         if (!taskRepository.existsById(id)) {
             throw new NotFoundException("Task with this id was not found");
         }
-        updatedTask.setId(id);
-        taskRepository.save(updatedTask);
+        Task task = taskMapper.toEntity(taskDTO);
+        task.setId(id);
+        taskRepository.save(task);
     }
 
     @Transactional
-    public void markDone(int id, Task task) {
+    public void markDone(int id, TaskDTO taskDTO) {
         if (!taskRepository.existsById(id)) {
             throw new NotFoundException("Task with this id was not found");
         }
+        Task task = taskMapper.toEntity(taskDTO);
         task.setId(id);
         task.setDone(true);
         taskRepository.save(task);

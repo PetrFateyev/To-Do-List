@@ -1,25 +1,21 @@
-package ru.fateyev.ToDoList.services;
+package ru.fateyev.todo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.fateyev.ToDoList.controllers.ListSort;
-import ru.fateyev.ToDoList.models.ToDoList;
-import ru.fateyev.ToDoList.repositories.ToDoListRepository;
-import ru.fateyev.ToDoList.util.NotFoundException;
+import ru.fateyev.todo.web.controller.ListSort;
+import ru.fateyev.todo.entity.ToDoList;
+import ru.fateyev.todo.repository.ToDoListRepository;
+import ru.fateyev.todo.exception.NotFoundException;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ToDoListService {
 
     private final ToDoListRepository toDoListRepository;
-
-    @Autowired
-    public ToDoListService(ToDoListRepository toDoListRepository) {
-        this.toDoListRepository = toDoListRepository;
-    }
 
     @Transactional
     public void save(ToDoList toDoList){

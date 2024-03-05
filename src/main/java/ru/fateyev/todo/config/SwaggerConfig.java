@@ -1,4 +1,4 @@
-package ru.fateyev.ToDoList.config;
+package ru.fateyev.todo.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;

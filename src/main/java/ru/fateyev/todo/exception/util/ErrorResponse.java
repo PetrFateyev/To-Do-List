@@ -1,4 +1,4 @@
-package ru.fateyev.ToDoList.util;
+package ru.fateyev.todo.exception.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package ru.fateyev.ToDoList.controllers;
+package ru.fateyev.todo.web.controller;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
